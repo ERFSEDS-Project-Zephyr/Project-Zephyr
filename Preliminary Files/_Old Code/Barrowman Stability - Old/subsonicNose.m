@@ -1,0 +1,14 @@
+function [CLa,centerPresX,liftForce,dragForce] = subsonicNose(bodyOuterDiameter,noseLength,Mach,attackAng)
+bodyRadius = bodyOuterDiameter/2;
+ogiveRadius = (noseLength^2 + bodyRadius^2)/(2*bodyRadius);
+filledVolume = pi*((bodyRadius-ogiveRadius)*asin(noseLength/ogiveRadius)*ogiveRadius^2 + (bodyRadius^2 - 2*ogiveRadius*bodyRadius + 2*ogiveRadius^2)*noseLength + (bodyRadius-ogiveRadius)*noseLength*sqrt(ogiveRadius^2 - noseLength^2) - (noseLength^3)/3);
+CLa = 2; % Eq. 3-66
+centerPresX = noseLength - filledVolume/(pi*bodyRadius^2); % Eq. 3-89
+liftForce = (0.5*1.225*(Mach*340.3)^2)*CLa*(pi*(bodyOuterDiameter)/4)*attackAng;
+f = noseLength/(bodyOuterDiameter/2);
+Re = 1.225*(Mach*340.3)*noseLength/(1.789*10^-5);
+Cfc = (1.328/sqrt(Re))*(1 - 0.12*Mach^2);
+K = 1 + ((6.82*Cfc*(f+1)^2.22)/(f^3))^(5/3);
+CDP = 6*Cfc/((f^3)*(K - Mach^2)^0.6);
+CD = CDP;
+dragForce = (0.5*1.225*(Mach*340.3)^2)*CD*(pi*(bodyOuterDiameter)/4);

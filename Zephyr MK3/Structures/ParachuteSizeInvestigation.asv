@@ -1,0 +1,56 @@
+clear; close all; clc; warning('off'); addpath('../..');
+set(0,'defaultTextInterpreter','latex','defaultAxesFontSize',24,'defaultAxesFontName','Times New Roman');
+
+% Givens
+CK = 1.3; % Opening Force Coefficient
+rho = 1.225; % Air Density (kg m^-3)
+g = 9.81; % Gravity (m s^-2)
+y0 = 748; % Height at line stretch (m)
+v0 = 344; % Velocity at line stretch (m s^-1)
+m_ball = 0.25; % Ballast Mass (kg)
+m_dart = 3.771 + m_ball; % Dart Mass (kg)
+m_nose = 0.425 + m_ball; % Nose Mass (kg)
+CD0 = ; % Flat 
+CDtheta = ; %
+
+% Simulation Parameters
+n_strips = 8; % # of strips in parachute
+force_nose_max = 6*convert(67,'lbf','N'); % Max. Nose Cone Force (N)
+apogee_max = 4420; % Max Apogee Height (m)
+diameter_max = 2; % Max. Diameter (m)
+coeffDrag_max = 1; % Max. Drag Coefficient
+n_diameter = 1e3; % Resolution of Diameter
+n_coeffDrag = 1e3; % Resolution of Drag Coeffcient
+
+[D,CD] = meshgrid(linspace(diameter_max/n_diameter,diameter_max,n_diameter),...
+                  linspace(coeffDrag_max/n_coeffDrag,coeffDrag_max,n_coeffDrag));
+Theta = (CD - CD0)/CDtheta;
+
+lambda = 0.5*(1 - 1/(2*n_strips));
+AD = (0.25*pi*D.^2).*CD;
+vT = sqrt(2*m_dart*g./(rho*AD));
+tf = 0.65*lambda*D/v0;
+alpha = (1+CK)*g*tf./(vT.^2);
+vf = (sqrt(1 + 2*(v0 - g*tf).*alpha) - 1)./alpha;
+force_noseF = 0.5*rho*(vf.^2)*CK.*AD*(m_nose/m_dart);
+apogee = y0 + v0*tf - 0.5*g*(tf.^2).*(1 + (1/3)*(1+2*CK)*((vf./vT).^2)) + ((vT.^2)/g).*log(sqrt(1 + (vf./vT).^2));
+
+S_fmax = sign(force_noseF - force_nose_max);
+S_apogee = sign(apogee - apogee_max);
+P_valid = intersect([D(S_fmax~=1)/0.0254,Theta(S_fmax~=1)],...
+                    [D(S_apogee~=1)/0.0254,Theta(S_apogee~=1)],'rows');
+I_valid = boundary(P_valid(:,1),P_valid(:,2));
+save('ParachuteSizeInvestigation.mat','P_valid');
+
+figure(1);
+subplot(1,2,1); hold on;
+surf(D/0.0254,Theta,S_fmax,255*cat(3,S_fmax.^2,0.5*S_fmax.*(S_fmax+1),zeros(size(S_fmax)))); shading interp; 
+fill3(P_valid(I_valid,1),P_valid(I_valid,2),ones(length(I_valid),1),'g','EdgeColor','none');
+hold off; view(0,90); pbaspect([1 1 1]);
+title('Nose Cone Force Bifurcation'); xlabel('Parachute Diameter (inches)'); ylabel('Exterior Cone Angle');
+
+subplot(1,2,2); hold on;
+surf(D/0.0254,Theta,S_apogee,255*cat(3,S_apogee.^2,0.5*S_apogee.*(S_apogee+1),zeros(size(S_apogee)))); shading interp; 
+fill3(P_valid(I_valid,1),P_valid(I_valid,2),ones(length(I_valid),1),'g','EdgeColor','none');
+hold off; view(0,90); pbaspect([1 1 1]);
+title('Apogee Height Bifurcation'); xlabel('Parachute Diameter (inches)'); ylabel('Exterior Cone Angle');

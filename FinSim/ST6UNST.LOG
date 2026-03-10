@@ -1,0 +1,127 @@
+ %% PLEASE DO NOT MODIFY OR DELETE THIS FILE! %% 
+ %% This file contains information about the installation of an application. %% 
+ %% It will be used to automatically remove all application components from your computer if you choose to do so. %% 
+
+
+NOTE: Beginning of the bootstrapper section
+
+CONFIG: Title: "FinSim"
+
+ACTION: RegKey: "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion", "SharedDLLs"
+
+ACTION: SystemFile: "C:\Windows\System32\VB6STKIT.DLL"
+(File was not found or was an older version -- new file copied)
+
+ACTION: SystemFile: "C:\WINDOWS\SYSTEM32\COMCAT.DLL"
+(File currently on disk was already up to date)
+
+ACTION: SystemFile: "C:\WINDOWS\SYSTEM32\STDOLE2.TLB"
+(File currently on disk was already up to date)
+
+ACTION: SystemFile: "C:\WINDOWS\SYSTEM32\ASYCFILT.DLL"
+(File currently on disk was already up to date)
+
+ACTION: SystemFile: "C:\WINDOWS\SYSTEM32\OLEPRO32.DLL"
+(File currently on disk was already up to date)
+
+ACTION: SystemFile: "C:\WINDOWS\SYSTEM32\OLEAUT32.DLL"
+(File currently on disk was already up to date)
+
+ACTION: SystemFile: "C:\WINDOWS\SYSTEM32\msvbvm60.dll"
+(File currently on disk was already up to date)
+
+ACTION: DllSelfRegister: "C:\WINDOWS\SYSTEM32\COMCAT.DLL"
+
+ACTION: TLBRegister: "C:\WINDOWS\SYSTEM32\STDOLE2.TLB"
+
+ACTION: DllSelfRegister: "C:\WINDOWS\SYSTEM32\OLEPRO32.DLL"
+
+ACTION: DllSelfRegister: "C:\WINDOWS\SYSTEM32\OLEAUT32.DLL"
+
+ACTION: DllSelfRegister: "C:\WINDOWS\SYSTEM32\msvbvm60.dll"
+
+NOTE: End of the bootstrapper section
+
+NOTE: Now spawning the main Setup program 'Setup1.exe'....
+
+ACTION: CreateDir: "C:\Program Files (x86)\FinSim"
+
+ACTION: CreateDir: "C:\Users\grhfa\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FinSim"
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\Balsa Wood-Special.MAT"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\TOMAHAWK ROCKET.FIN"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\QUANTUM LEAP FLUTTER.FIN"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\NEW_MAT.MAT"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\N5800 Project.FIN"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\ASROC Flutter_38.FIN"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\Apogee Test.FIN"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\Champion.FIN"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\Spin_Stabilization_Theory.pdf"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\FinSim_Theory.pdf"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\Saturn Spin Data-2.csv"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\Saturn Spin Data-1.TXT"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\SATURN ROCKET.FIN"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\NIKEHURC.FIN"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\NASTRAN EXAMPLE.FIN"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\NASTRAN example.rkt"
+(File was not found or was an older version -- new file copied)
+
+ACTION: SharedFile: "C:\Windows\System32\mscomct2.ocx"
+(File was not found or was an older version -- new file copied)
+
+ACTION: SharedFile: "C:\Windows\System32\TABCTL32.OCX"
+(File was not found or was an older version -- new file copied)
+
+ACTION: SharedFile: "C:\Windows\System32\MSCOMCTL.OCX"
+(File was not found or was an older version -- new file copied)
+
+ACTION: SharedFile: "C:\Windows\System32\comdlg32.ocx"
+(File was not found or was an older version -- new file copied)
+
+ACTION: PrivateFile: "C:\Program Files (x86)\FinSim\FinSim.exe"
+(File was not found or was an older version -- new file copied)
+
+ACTION: DllSelfRegister: "C:\Windows\System32\mscomct2.ocx"
+
+ACTION: DllSelfRegister: "C:\Windows\System32\TABCTL32.OCX"
+
+ACTION: DllSelfRegister: "C:\Windows\System32\MSCOMCTL.OCX"
+
+ACTION: DllSelfRegister: "C:\Windows\System32\comdlg32.ocx"
+
+ACTION: ShellLink: "FinSim", "FinSim"
+
+ACTION: RegKey: "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion", "App Paths\FinSim.exe"
+
+ACTION: RegValue: "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\FinSim.exe", ""
+

@@ -1,0 +1,170 @@
+%% Subsonic
+%angle of attack on columns and mach number on row
+%{
+Using c_L = 2 * pi * alpha in degrees / sqrt(1-Mach^2)
+Using c_D = (0.3 * t / chordRoot) + pi * (chordRoot + chordTip) / Span / (1-Mach^2) * angleAttack^2
+
+s = height of one fin
+A = area of the fin
+t = thickness of the fin
+
+AngleAttack = angle of attack in degree
+minAngleAttack = starting Angle Attack from simMaster
+maxAngleAttack = ending AngleAttack from simMaster
+deltaAngleAttack = increment for the loop
+Mach = speed in terms of mach
+minMach = starting Mach value from simMaster
+maxMach = ending Mach value must be less than 1
+deltaMach = Mach increments
+%}
+%clear workspace, window, and allow access to outside functions
+clear
+clc
+addpath('..')
+
+%Create variables for the simMaster variables
+simMaster = readcell("ZephyrMK2_SimMasterFile.xlsx");
+setup = cell2mat(simMaster(2:13,2));
+bodyDims = cell2mat(simMaster(2:7,4));
+bodyDims = cell2mat(simMaster(2:7+bodyDims(6),4));
+finDims = cell2mat(simMaster(3:16,6:6+bodyDims(6)-1));
+%>>>>>>> Stashed changes:Aerodynamics/FinApproximations.m
+
+%% Setup values from the simMaster
+%Values unique to each fin set
+chordRoot = finDims(2,:)/100; %convert from cm to m
+chordTip = finDims(3,:)/100; %convert from cm to m
+s = finDims(4,:)/100; %convert from cm to m
+t = finDims(5,:)/100; %convert from cm to m
+
+TaperLength = finDims(6,:)/100; %convert from cm to m
+Lphi = (finDims(13,:)/2)*pi/180;
+Tphi = (finDims(14,:)/2)*pi/180;
+
+%Values same for all fin sets
+gamma = 1.4; %constant of pressure divided by constant of volume
+p_inf = 101325; %One atmosphere
+minMach = 0; %setup(1)
+deltaMach = setup(7);
+maxMach = setup(6)-deltaMach;
+minAngleAttack = setup(8)*pi/180; %leave in degrees
+maxAngleAttack = setup(9)*pi/180;
+deltaAngleAttack = setup(10)*pi/180;
+
+%% Calculations for axial/normal coefficients
+%{
+Using LiftForce = q_inf * Span * (chordRoot + chordTip) * c_L (In Newtons)
+Using DragForce = q_inf * Span * (chordRoot + chordTip) * c_D (In Newtons)
+
+q_inf = gamma / 2 * p_inf in pascals * Mach^2
+%}
+
+%creates a 3 dimensional value where rows is mach, columns is angle of
+%attack, and depth is finset
+for finset = 1:bodyDims(6)
+    %fprintf("i")
+
+    EdgeLength = sqrt(((TaperLength(finset))^2)+(((t(finset))/2)^2));
+    MidLength = chordRoot(finset) - 2*TaperLength(finset);
+    n = finset; %This just makes it so n doesnt have to be redefined every time its present
+
+    j = 1;
+    for AngleAttack = (minAngleAttack:deltaAngleAttack:maxAngleAttack)
+        
+        i = 1;
+       
+        for Mach = minMach:deltaMach:maxMach
+
+            q_inf = (gamma/2)*p_inf*(Mach^2);
+
+            if Mach <= 1-deltaMach
+                
+                c_L = (2*pi*AngleAttack/sqrt(1-Mach^2));
+                c_D = 0.3* t(finset) / chordRoot(finset) + pi * (chordRoot(finset) + chordTip(finset)) * (AngleAttack^2) / s(finset) / (1-Mach^2);
+            
+                c_Lift = s(finset) * (chordRoot(finset) + chordTip(finset)) * c_L / chordRoot(finset);
+                c_Drag = s(finset) * (chordRoot(finset) + chordTip(finset)) * c_D / chordRoot(finset);
+
+                Ca(i,j,finset) = c_Drag*cos(AngleAttack) + c_Lift*sin(AngleAttack);
+                Cn(i,j,finset) = -c_Drag*sin(AngleAttack) + c_Lift*cos(AngleAttack);
+
+            elseif Mach >= 1+deltaMach
+
+                Cp1 = 2*(Lphi(finset)-AngleAttack)/sqrt((Mach^2)-1); %Top leading edge
+                p1 = p_inf+(q_inf*Cp1);
+                N1 = -p1*EdgeLength*cos(Lphi(finset));
+                A1 = p1*EdgeLength*sin(Lphi(finset));
+                Cn1 = N1/(q_inf*chordRoot(finset));
+                Ca1 = A1/(q_inf*chordRoot(finset));
+    
+                Cp2 = 2*(-AngleAttack)/sqrt((Mach^2)-1); %Top middle section
+                p2 = p_inf+(q_inf*Cp2);
+                N2 = -p2*MidLength;
+                A2 = 0;
+                Cn2 = N2/(q_inf*chordRoot(finset));
+                Ca2 = A2/(q_inf*chordRoot(finset));
+    
+                Cp3 = 2*(-Tphi(finset)-AngleAttack)/sqrt((Mach^2)-1); %Top trailing edge
+                p3 = p_inf+(q_inf*Cp3);
+                N3 = -p3*EdgeLength*cos(Tphi(finset));
+                A3 = -p3*EdgeLength*sin(Tphi(finset));
+                Cn3 = N3/(q_inf*chordRoot(finset));
+                Ca3 = A3/(q_inf*chordRoot(finset));
+        
+                Cp4 = 2*(Lphi(finset)+AngleAttack)/sqrt((Mach^2)-1); %Bottom leading edge
+                p4 = p_inf+(q_inf*Cp4);
+                N4 = p4*EdgeLength*cos(Lphi(finset));
+                A4 = p4*EdgeLength*sin(Lphi(finset));
+                Cn4 = N4/(q_inf*chordRoot(finset));
+                Ca4 = A4/(q_inf*chordRoot(finset));
+        
+                Cp5 = 2*(AngleAttack)/sqrt((Mach^2)-1); %Bottom middle section
+                p5 = p_inf+(q_inf*Cp5);
+                N5 = p5*MidLength;
+                A5 = 0;
+                Cn5 = N5/(q_inf*chordRoot(finset));
+                Ca5 = A5/(q_inf*chordRoot(finset));
+                
+                Cp6 = 2*(-Tphi(finset)+AngleAttack)/sqrt((Mach^2)-1); %Bottom trailing edge
+                p6 = p_inf+(q_inf*Cp6);
+                N6 = p6*EdgeLength*cos(Tphi(finset));
+                A6 = -p6*EdgeLength*sin(Tphi(finset));
+                Cn6 = N6/(q_inf*chordRoot(finset));
+                Ca6 = A6/(q_inf*chordRoot(finset));
+
+                Cn(i,j,finset) = Cn1 + Cn2 + Cn3 + Cn4 + Cn5 + Cn6; 
+                Ca(i,j,finset) = Ca1 + Ca2 + Ca3 + Ca4 + Ca5 + Ca6; 
+            
+            elseif Mach == 1
+
+                Cn(i,j,finset) = inf; %Prevents coefficients at Mach 1 from plotting. Can be changed for an accurate approximation
+                Ca(i,j,finset) = inf;
+                
+            end
+            
+            i = i + 1;
+        end
+
+        j = j + 1;
+
+    end
+end
+
+%% Manipulation of Matrices for Ease of Reading
+
+%Restate forces as 2d matrices for cleaner viewing
+
+Cafinset1Sup = Ca(:,:,1);
+Cafinset2Sup = Ca(:,:,2);
+% Cafinset3Sup = Ca(:,:,3); simMaster needs to say 3 stages
+
+Cnfinset1 = Cn(:,:,1);
+Cnfinset2 = Cn(:,:,2);
+% Cnfinset3Sup = Cn(:,:,3); simMaster needs to say 3 stages
+
+%% Saving variables to .mat
+
+save("Axial",'Ca')
+save("Normal",'Cn')
+
+

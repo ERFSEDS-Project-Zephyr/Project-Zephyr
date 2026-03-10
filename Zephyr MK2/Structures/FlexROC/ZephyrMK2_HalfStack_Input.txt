@@ -1,0 +1,86 @@
+$ Zephyr MK2
+UNITS,cm,gr,Newton
+$ Fiberglass
+$	Young's Mod = 1,600,000 N/cm^2
+$	Density = 1.99 g/cm^3
+$ Carbon Fiber
+$	Young's Mod = 25,000,000 N/cm^2 
+$	Density = 1.8 g/cm^3
+MATERIAL,fiberglass,1600000,1.99
+MATERIAL,carbonfiber,25000000,1.8
+$
+$ Nose Cone
+$	Length = 38 cm
+$	O.D = 7.92 cm
+$	Mass = 243 g
+MASS,1000
+NOSE,38,7.92,243
+$
+$ Dart Body
+$	Total Length = 109.8cm
+$	O.D = 7.92 cm
+$	I.D = 7.62 cm
+$	Material = Fiberglass
+$ Masses
+$	Main Chutes - 6.35cm,11.9g / +18.65cm,160g / +14.84cm,100g
+$	AV Bay - 1321g,+23.86cm
+$	Exp. Chute - +27.9cm,100g / +19.55cm,302g
+TUBE,6.35,7.92,7.62,fiberglass,0
+MASS,11.9
+TUBE,18.65,7.92,7.62,fiberglass,0
+MASS,160
+TUBE,14.84,7.92,7.62,fiberglass,0
+MASS,100
+TUBE,23.86,7.92,7.62,fiberglass,0
+MASS,1321
+TUBE,27.9,7.92,7.62,fiberglass,0
+MASS,100
+TUBE,6.4,7.92,7.62,fiberglass,0
+$
+$ Dart Fins
+$	# of fins = 4
+$	Root Chord = 12cm
+$	Tip Chord =  7cm
+$	Sweep Length = 2.55cm
+$	Height = 8cm
+$	Thickness = 0.3cm
+$	Material = Carbon Fiber
+FINS,4,12,7,2.55,8,0.3,carbonfiber
+TUBE,12.9,7.92,7.62,fiberglass,0
+MASS,300
+TUBE,6.65,7.92,7.62,fiberglass,0
+MASS,302
+$
+$ Booster 2 Body
+$	Total Length = 147.4 cm
+$	O.D = 7.92 cm
+$	I.D = 7.62 cm
+$	Material = Fiberglass
+$ Masses
+$	Booster 2 Chute - +25.3cm,600g / +14.36cm,454g
+$	AV Bay - +18.14cm,1245.2g
+$	Booster 2 Motor - +54cm,4751g
+TUBE,25.3,7.92,7.62,fiberglass,0
+MASS,600
+TUBE,14.36,7.92,7.62,fiberglass,0
+MASS,454
+TUBE,18.14,7.92,7.62,fiberglass,0
+MASS,1245.2
+TUBE,54,7.92,7.62,fiberglass,0
+MASS,4751
+TUBE,7.05,7.92,7.62,fiberglass,0
+$
+$ Booster 2 Fins
+$	# of fins = 4
+$	Root Chord = 17cm
+$	Tip Chord =  6cm
+$	Sweep Length = 7.45cm
+$	Height = 12.7cm
+$	Thickness = 0.3cm
+$	Material = Carbon Fiber
+FINS,4,17,6,7.45,12.7,0.3,carbonfiber
+TUBE,17,7.92,7.62,fiberglass,0
+$
+UNITS,m,kg,Newton
+VELOC,0,2000,5,0
+$

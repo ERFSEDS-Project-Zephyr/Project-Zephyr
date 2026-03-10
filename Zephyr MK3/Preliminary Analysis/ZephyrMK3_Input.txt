@@ -1,0 +1,71 @@
+$ Zephyr MK3
+UNITS,in,oz,lb
+$ Fiberglass
+$	Young's Mod = 4,000,000 lbf/in^2
+$	Density = 1.148 oz/in^3
+$ Carbon Fiber
+$	Young's Mod = 1,740,000 lbf/in^2 
+$	Density = 0.785 oz/in^3
+MATERIAL,fiberglass,4000000,1.148
+MATERIAL,carbonfiber,1740000,0.785
+$
+$ Nose Cone
+$	Length = 15 in
+$	O.D = 3.12 in
+$	Mass = 14.9 oz
+MASS,0.544
+NOSE,15,3.12,14.9
+$
+$ Dart Body
+$	Total Length = 38 in
+$	O.D = 3.12 in
+$	I.D = 3.00 in
+$	Material = Fiberglass
+$ Masses
+$	AV Bay - 15 in, 3.060 oz/in
+$	Main Chutes - 14.5 in, 0.652 oz/in
+$	Exp. Chute - 8.5 in, 3.275 oz/in
+TUBE,15.00,3.12,3.00,fiberglass,3.060
+TUBE,14.50,3.12,3.00,fiberglass,0.652
+TUBE,3.812,3.12,3.00,fiberglass,3.275
+$
+$ Dart Fins
+$	# of fins = 4
+$	Root Chord = 4.688 in
+$	Tip Chord =  2.375 in
+$	Sweep Length = 2.313 in
+$	Height = 2.602 in
+$	Thickness = 0.25 in
+$	Material = Carbon Fiber
+FINS,4,4.688,2.375,2.313,2.602,0.25,carbonfiber
+TUBE,4.688,3.12,3.00,fiberglass,3.275
+$
+$ Booster 2 Body
+$	Total Length = 64 in
+$	O.D = 3.12 in
+$	I.D = 3.00 in
+$	Material = Fiberglass
+$ Masses
+$	Mid-Sep System - 8 in, 1.099 oz/in
+$	Booster 2 Chutes - 16.75 in, 1.288 oz/in
+$	AV Bay - 11 in, 3.689 oz/in
+$	Booster 2 Motor - 26.75 in, 6.280 oz/in
+TUBE,8.000,3.12,3.00,fiberglass,1.099
+TUBE,16.75,3.12,3.00,fiberglass,1.288
+TUBE,11.00,3.12,3.00,fiberglass,3.689
+TUBE,20.422,3.12,3.00,fiberglass,6.280
+$
+$ Booster 2 Fins
+$	# of fins = 4
+$	Root Chord = 6.328 in
+$	Tip Chord =  3.328 in
+$	Sweep Length = 3.000 in
+$	Height = 4.797 in
+$	Thickness = 0.25 in
+$	Material = Carbon Fiber
+FINS,4,6.328,3.328,3.000,4.797,0.25,carbonfiber
+TUBE,6.328,3.12,3.00,fiberglass,6.280
+$
+UNITS,ft,oz,lb
+VELOC,0,3250,5,0
+$

@@ -1,0 +1,109 @@
+%Clear workspace
+clear;
+close all;
+clc;
+addpath('..\Data Files');
+
+%Read data from sim file
+simMaster = readcell("ZephyrMK3_SimMasterFile.xlsx");
+setup = cell2mat(simMaster(2:9,2));
+bodyDims = cell2mat(simMaster(2:8,4));
+bodyDims = cell2mat(simMaster(2:8+bodyDims(7),4));
+finDims = cell2mat(simMaster(3:11,6:6+bodyDims(7)-1));
+
+%Values unique to each fin set
+chordRoot = finDims(2,:)/100; %convert from cm to m
+chordTip = finDims(3,:)/100; %convert from cm to m
+s = finDims(4,:)/100; %convert from cm to m
+t = finDims(5,:)/100; %convert from cm to m
+
+%hardcode vals
+p1 = 101324; %Pa 1st reg
+M1_max = 2;
+M1_min = 1;
+deltaMach = 0.01;
+alpha_max = 5;
+alpha_min = 0;
+alpha_delta = 0.1;
+gamma = 1.4;
+
+%undefined random stuff
+
+MachVect = M1_min:deltaMach:M1_max;
+alphaVect = alpha_min:alpha_delta:alpha_max;
+NormForceTable = zeros(length(MachVect),length(alphaVect)); 
+AxialForceTable = zeros(length(MachVect),length(alphaVect)); 
+
+
+for finset = 1:bodyDims(7)
+
+    c_av = (chordRoot(finset)+chordTip(finset))/2;
+
+     j = 1;
+
+    for alpha = deg2rad(alpha_min:alpha_delta:alpha_max)
+
+        i = 1;
+
+        for M1 = M1_min+deltaMach:deltaMach:M1_max
+        
+            q_inf = (gamma/2)*p1*(M1^2);
+
+            %oblique shocks
+            %Finds wave turn angle beta (from flowoblique)
+            f = @(b) (2*cot(b).*(M1.^2.*(sin(b)).^2-1))/(M1.^2.*(gamma + cos(2*b))+2)-tan(alpha);
+            fp = @(b) (4*M1.^2.*sin(2*b).*cot(b).*(M1.^2.*sin(b).^2-1))./((M1.^2.*(cos(2*b)+gamma)+2).^2)...                
+            + (4*M1.^2.*cos(b).^2 - 2*csc(b).^2.*(M1.^2.*(sin(b)).^2-1))./(M1.^2.*(cos(2*b)+gamma) +2);
+            
+            %{
+            for i = 1:length(alpha)
+                M = alpha(i);
+                f1 = @(b) -1*(2*cot(b).*(M.^2.*(sin(b)).^2-1))./(M.^2.*(gamma + cos(2*b))+2);
+                x = fminbnd(f1,0,pi/2);
+            end        
+            %}
+
+            xold = ones(size(alpha))*0.1;        
+            xnew = xold - f(xold)/fp(xold); 
+            %{
+            while abs(xold - xnew) > 10^-8*ones(size(alpha)) %breaks at certain values bc shock is detatched       
+                abs(xold - xnew)
+                xold = xnew;        
+                xnew = xold - f(xold)/fp(xold);        
+            end      
+            %}
+            retval = rad2deg(xnew);
+            Mn1=M1*sind(retval);
+            p2 = p1*(1+((2*gamma)/(gamma+1))*(Mn1^2-1)); %2nd reg
+
+            %Expansion Waves
+            [M1, nu1, mu1] = flowprandtlmeyer(1.4,M1);
+            nu2 = nu1 + rad2deg(alpha);
+            [M2, nu2, mu2] = flowprandtlmeyer(1.4, nu2, 'nu');
+
+            p3 = 1/(((1+((gamma-1)/2)*M2^2)/(1+((gamma-1)/2)*M1^2))); %3rd reg
+
+            %Forces
+            D = (p3 - p2)*c_av*s*sin(alpha);
+            L = (p3 - p2)*c_av*s*cos(alpha);
+            N = L*cos(alpha)+D*sin(alpha);
+            A = D*cos(alpha)+L*sin(alpha);
+
+            Ca(i,j,1:finset) = N/(q_inf*c_av*s);
+            Cn(i,j,1:finset) = A/(q_inf*c_av*s);
+
+            i = i + 1;
+
+        end
+
+        j = j + 1;
+
+    end
+end
+
+hold on
+plot((M1_min+deltaMach):deltaMach:M1_max,Ca(:,:,1))
+xlabel("Mach [M]")
+ylabel("Coeff Axial")
+title("Coeff Axial vs Mach Finset 1")
+hold off
