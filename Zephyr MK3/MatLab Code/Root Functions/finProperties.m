@@ -24,9 +24,12 @@ finProps.midChordLength = sqrt((0.5*finProps.rootChord - 0.5*finProps.tipChord -
 % Center of Gravity Location
 taperRatio = finProps.tipChord./finProps.rootChord;
 sweepRatio = finProps.sweepLength./finProps.rootChord;
-leadTaper = finProps.leadTaperLength./finProps.rootChord;
-trailTaper = finProps.trailTaperLength./finProps.rootChord;
+leadTaperRatio = finProps.leadThickness./finProps.thickness;
+leadTaper = (finProps.leadTaperLength./finProps.rootChord).*(1 - leadTaperRatio);
+trailTaperRatio = finProps.trailThickness./finProps.thickness;
+trailTaper = (finProps.trailTaperLength./finProps.rootChord).*(1 - trailTaperRatio);
 
 finProps.CG(2,:) = (2*(1 + 2*taperRatio) - 3*(leadTaper + trailTaper))./(6*(1 + taperRatio - leadTaper - trailTaper));
-finProps.CG(3,:) = 0.5*(1 - (leadTaper.^2 - trailTaper.^2 - 1.5*(1 + taperRatio).*leadTaper)./(1 + taperRatio + taperRatio.^2 - 1.5*(1 + taperRatio).*(leadTaper + trailTaper)));
+finProps.CG(3,:) = 0.5*(1 - ((leadTaper.^2)./(1 - leadTaperRatio) - (trailTaper.^2)./(1 - trailTaperRatio) - 0.75*(1 + taperRatio).*(leadTaper - trailTaper))./...
+                             (1 + taperRatio + taperRatio.^2 - 0.75*(1 + taperRatio).*(leadTaper + trailTaper)));
 finProps.CG(1,:) = finProps.CG(3,:) + (sweepRatio - (1 - taperRatio).*finProps.CG(3,:)).*finProps.CG(2,:);
