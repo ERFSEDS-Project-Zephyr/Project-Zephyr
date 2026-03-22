@@ -1,6 +1,6 @@
 function readThrustCurve(filename,motorName)
-% Function takes in the name of file with RockSim data of motor and saves
-% data as .mat file in the local file folder
+% Function takes in .txt file with RockSim data of motor and saves data as 
+% .mat file in the local file folder
 
 % Read data file
 motorData = readcell(filename);
@@ -20,4 +20,4 @@ eval([motorName,'.time = motorData(1,:)']);
 eval([motorName,'.thrust = motorData(2,:)']);
 eval([motorName,'.mass = motorData(3,:)']);
 eval([motorName,'.cg = motorData(4,:)']);
-save([motorName,'_Properties.mat'],filename(1:5));
+save([motorName,'_Properties.mat'],motorName);

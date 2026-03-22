@@ -1,4 +1,4 @@
-function [Setup,BodyDims,FinDims,MassDistribution] = MasterFileReader(filename)
+function [Setup,BodyDims,FinDims,MassDistribution] = readMasterFile(filename)
 % % % % Function takes the name of an excel file specialized for Zephyr data and
 % outputs MATLAB structures that hold data referenced by their names.
 %   Detailed explanation goes here
